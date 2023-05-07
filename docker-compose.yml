@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  laravel_app_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+
+  laravel_app_2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+    - "8082:80"
+    - "8083:81"
+    depends_on:
+      - laravel_app_1
+      - laravel_app_2
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
